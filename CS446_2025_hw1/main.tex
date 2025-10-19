@@ -1,0 +1,758 @@
+\documentclass{article}
+        \usepackage[margin=1in]{geometry}
+        \usepackage{algorithm}
+        \usepackage{algorithmic}
+        \usepackage{hyperref}
+        \usepackage{amsmath,amsfonts,amssymb,amsthm,commath,dsfont}
+        \usepackage{bm}
+        \usepackage{enumitem}
+        \usepackage{framed}
+        \usepackage{xspace}
+        \usepackage{microtype}
+        \usepackage{float}
+        \usepackage[round]{natbib}
+        \usepackage{cleveref}
+        \usepackage[dvipsnames]{xcolor}
+        \usepackage{graphicx}
+        \usepackage{listings}
+        \usepackage[breakable]{tcolorbox}
+        \tcbset{breakable}
+        \usepackage{mathtools}
+        \usepackage{autonum}
+        \usepackage{comment}
+        \usepackage{booktabs}
+        \usepackage{enumitem}
+
+        \newlist{legal}{enumerate}{10}
+        \setlist[legal]{label*=\arabic*.}
+        
+        \newcommand{\colbar}{\rule[-3mm]{.3mm}{1.5em}}
+        \newcommand{\rowbar}{\rule[.5ex]{1.5em}{.3mm}}
+        \newcommand{\francis}[1]{{\color{blue}#1}}
+        \DeclareMathOperator{\rank}{rank}
+        
+        \newcommand{\yb}[1]{{\color{blue} #1}}
+
+        % following loops. stolen from djhsu
+        \def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
+        % \bbA, \bbB, ...
+        \def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
+        \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+        
+        % \cA, \cB, ...
+        \def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\mathcal{#1}}}}
+        \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+        
+        % \vA, \vB, ..., \va, \vb, ...
+        \def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{#1}}}}
+        \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+        
+        % \valpha, \vbeta, ...,  \vGamma, \vDelta, ...,
+        \def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{\csname #1\endcsname}}}}
+        \ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}{ell}\ddefloop
+
+        \newcommand\T{{\scriptscriptstyle\mathsf{T}}}
+        \def\diag{\textup{diag}}
+        \newcommand{\bx}{{\boldsymbol x}}
+        \newcommand{\xup}[1]{x^{({#1})}}
+        \newcommand{\yup}[1]{y^{({#1})}}
+        \newcommand{\bxup}[1]{{\bx}^{({#1})}}
+        \DeclareMathOperator*{\argmin}{arg\,min}
+        \DeclareMathOperator*{\argmax}{arg\,max}
+
+        \def\SPAN{\textup{span}}
+        \def\tu{\textup{u}}
+        \def\R{\mathbb{R}}
+        \def\E{\mathbb{E}}
+        \def\Z{\mathbb{Z}}
+        \def\be{\bm{e}}
+        \def\nf{\nabla f}
+        \def\veps{\varepsilon}
+        \def\cl{\textup{cl}}
+        \def\inte{\textup{int}}
+        \def\dom{\textup{dom}}
+        \def\Rad{\textup{Rad}}
+        \def\lsq{\ell_{\textup{sq}}}
+        \def\hcR{\widehat{\cR}}
+        \def\hcRl{\hcR_\ell}
+        \def\cRl{\cR_\ell}
+        \def\hcE{\widehat{\cE}}
+        \def\cEl{\cE_\ell}
+        \def\hcEl{\hcE_\ell}
+        \def\eps{\epsilon}
+        \def\1{\mathds{1}}
+        \newcommand{\red}[1]{{\color{red} #1}}
+        \newcommand{\blue}[1]{{\color{blue} #1}}
+        \def\srelu{\sigma_{\textup{r}}}
+        \def\vsrelu{\vec{\sigma_{\textup{r}}}}
+        \def\vol{\textup{vol}}
+
+        \newcommand{\ip}[2]{\left\langle #1, #2 \right \rangle}
+        \newcommand{\mjt}[1]{{\color{blue}\emph\textbf{[M:}~#1~\textbf{]}}}
+        \newcommand{\sahand}[1]{{\color{green}\emph\textbf{[Sah:}~#1~\textbf{]}}}
+
+        \newtheorem{fact}{Fact}
+        \newtheorem{lemma}{Lemma}
+        \newtheorem{claim}{Claim}
+        \newtheorem{proposition}{Proposition}
+        \newtheorem{theorem}{Theorem}
+        \newtheorem{corollary}{Corollary}
+        \newtheorem{condition}{Condition}
+        \theoremstyle{definition}
+        \newtheorem{definition}{Definition}
+        \theoremstyle{remark}
+        \newtheorem{remark}{Remark}
+        \newtheorem{example}{Example}
+
+ 
+
+        \newenvironment{Q}
+        {%
+          \clearpage
+          \item
+        }
+        {%
+          \phantom{s} 
+          \bigskip
+          % \textbf{Solution.}
+        }
+
+        \title{CS 446 / ECE 449 --- Homework 1}
+        \author{\emph{yiminc2}}
+        \date{Version 1.0}
+
+        \begin{document}
+        \maketitle
+
+        \noindent\textbf{Instructions.}
+        \begin{itemize}
+          \item
+            Homework is due \textbf{Wednesday, September $17^{th}$, 11:59 a.m}; you have \textbf{3} late days in total for \textbf{all Homeworks}.
+        
+          \item
+            Everyone must submit \textbf{individually} at gradescope under \texttt{hw1}. 
+
+        
+          \item
+            The ``written'' submission at \texttt{hw1} \textbf{must be typed}, and submitted in
+            any format gradescope accepts (to be safe, submit a PDF).  You may use \LaTeX, markdown,
+            google docs, MS word, whatever you like; but it must be typed!
+        
+          \item
+            When submitting at \texttt{hw1}, gradescope will ask you to \textbf{mark out boxes
+            around each of your answers}; please do this precisely!
+        
+          \item
+            Please make sure your NetID is clear and large on the first page of the homework.
+        
+          \item
+            Your solution \textbf{must} be written in your own words.
+            Please see the course webpage for full \textbf{academic integrity} information.
+            You should cite any external reference you use.
+        
+
+           
+        \end{itemize}
+
+        
+\begin{enumerate}[font={\Large\bfseries},left=0pt]
+
+
+
+
+
+
+\begin{Q}
+\textbf{\Large $K$-NN } (43 pt.) 
+\begin{enumerate}
+    \item Assume that we have a dataset with two labels. The training set comes from the input space which is in the form of Figure~\ref{fig:circle}. Each input sample is within the region enclosed by either of the circles. Each circle represents one class: all the samples that come from the left circle (blue one) are labeled as $0$ and all the samples that come from the right circle (green one) are labeled as $1$. 
+    \begin{enumerate}
+        \item We know we have $N$ total of training samples, but we do not know how many of them come from each class. We are given a single point from the green circle as well as access to a $K$-NN classifier for which we can choose arbitrary $K$ and query the label of the $K$-NN classifier for the given point. What is the \textbf{minimum} number of queries required (in terms of $N$) to determine the number of training points from each class? 
+        Note that at each step, we can choose any $K$ and query the $K$-NN classifier for the label of the test sample, i.e. from the green circle. Explain your answer.  You may assume the number of green points is less than $N/2$. (6 pt.)\\
+        \textit{Hint:} Can we do better than $\mathcal{O}(N)$?
+        \item  Is there any setting (the number of training samples, their label distribution, etc.) that leads to the wrong prediction for a given test point using $1$-NN classifier?  (4 pt.)
+    \end{enumerate}
+    
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[width=0.5\linewidth]{circles_knn.png}
+        \caption{$K$-NN Training Dataset}
+        \label{fig:circle}
+    \end{figure}
+
+ 
+
+    \item 
+    Consider a set of data points in $\mathbb{R}^3$ (see Table~\ref{tab:perceptron})\label{}, now we want to use $K$-nearest neighbors ($K$-NN) to classify points in $\mathbb{R}^3$. Answer the questions below.
+    \begin{table}[!htb]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|}
+                \hline
+                \textbf{Index} & \textbf{$x_1$} & \textbf{$x_2$} & \textbf{$x_3$} & \textbf{Label} \\
+                \hline
+                1 & 1 & 1 & 1 & 1\\
+                \hline
+                2 & 0 & 0 & 1 & 1\\
+                \hline
+                3 & 0 & 0 & 0 & -1\\
+                \hline
+                4 & 1 & 0 & 0 & -1\\
+                \hline
+                5 & 0 & 1 & 0 & -1\\
+                \hline
+            \end{tabular}
+            \caption{A set of data points}
+            \label{tab:perceptron}
+        \end{table}
+    \begin{enumerate}
+        \item If $K$ = 1, if you have a new data point $\bm{x} = (0.4, 0.4, 1.5)$, what would the label of $\bm{x}$ be? (Please use Euclidean distance as the distance metric for this question.) (3 pt.)
+
+        \item When there is more noise in the training dataset, to reduce the overfitting problem, should we choose smaller $K$ or larger $K$? Please explain your answer. (3 pt.)
+
+    \end{enumerate}
+\item
+ Assume an input space \(S=\{\bx^{(i)}\}_{i=1}^N\), all $\bx^{(i)}$ being distinct. For each \(\bx^{(i)}\),
+the label \(y^{(i)}\in\{1,2\}\) is drawn independently with
+\(\mathbb{P}(y^{(i)}=1\,|\,\bx^{(i)})=0.9\).
+We form a training set \(\mathcal D=\{(\bx^{(i)},y^{(i)})\}_{i=1}^N\).
+Given a test sample \((\bx,y)\) where \(\bx\in S\) and \(y\) is drawn independently with the same conditional distribution, a \(1\)-NN classifier predicts the label $\hat{y}$ of the \(\bx\).
+ What would be the probability that we get the correct prediction for $\bx$?
+  (8 pt.)\\
+ \textit{Hint}: Note that from the assumptions, we know that $\exists (\bx^{(j)}, y^{(j)}) \in \mathcal{D}, \bx^{(j)} = \bx$.
+
+
+
+\item
+Consider the same setting of (c) but 
+now suppose for each \(\bx^{(i)}\in S\) we have \emph{three independent labeled replicas}
+\[
+(\bx^{(i)},y^{(i,1)}),\;(\bx^{(i)},y^{(i,2)}),\;(\bx^{(i)},y^{(i,3)}),
+\]
+where each \(y^{(i,r)}\) is drawn independently with
+\(\mathbb{P}(y^{(i,r)}=1\,|\,\bx^{(i)})=0.9\).
+Let the training set be
+\(\mathcal D=\{(\bx^{(i)},y^{(i,r)}):  r=1,2,3\}_{i=1}^{N}\).
+Given a test sample \((\bx,y)\) where \(\bx\in S\) and \(y\) is drawn independently with the same conditional distribution,
+what would be the probability that a $3$-NN classifier makes the correct prediction for a test sample $\bx$? How does this probability compare to using $1$-NN? (8 pt.)
+
+\textit{Hint}: Note that from the assumptions, we know that $\exists (\bx^{(j)}, y^{(j)}) \in \mathcal{D}, \bx^{(j)} = \bx$.
+\item In real-world scenarios, it is common for test data points to have missing features (e.g., due to sensor failure or incomplete measurements). Is it still possible to apply the $K$-NN algorithm in such situations? If so, describe give one of the ways of how this can be achieved. (5 pt.)
+
+\item \textbf{(Bonus question)} Assume an input space $S$ to be a polytope with $N$ vertices in $\R^d$. Further, assume that no pair of vertices are farther apart than $1$ from one another. We are interested in training a $1$-NN classifier on this input space such that the nearest neighbor used for the label prediction of each given point will be in a radius of $r$ from that point. Show that at most $N^{1/r^2 + 1}$ training samples are needed. For this purpose, you can use the following theorem:  
+
+\textbf{(Special case of Approximate Caratheodory's theorem)} For such an input space, assuming that the vertices are $\bx^{(1)}, \bx^{(2)}, \dots, \bx^{(N)}$, for each point $x \in S$ and each integer value $p$, there exist a subset of the vertices of the polytope $\bx^{(j_1)},\dots,\bx^{(j_p)} \in S$, such that $ \| \bx- \frac{1}{p} \sum_{i=1}^p \bx^{(j_i)}\|_2 \leq \frac{1}{\sqrt{p}}$. (6 pt.)
+
+\end{enumerate}
+\end{Q}
+
+\textbf{Solution.}
+    \begin{tcolorbox}
+        \begin{enumerate}
+        \item  
+            \begin{enumerate}
+                \item What is the minimum number of training samples in the green circle? \\
+                 \textbf{Ans: $LogN$} \\
+As the two circles do not overlap, their respective data points are certainly closer to their neighbors within the same circle, leading the classifier to output the majority of labels $(K = N)$. Given this fact and the following assumptions \\
+                    \begin{itemize}
+                        \item $output = 
+                        \begin{cases}
+                        0 \quad (blue) \\
+                        1 \quad (green)
+                        \end{cases}$
+                        \item The number of samples in the green circle is less than $N/2$ \\
+                    \end{itemize}
+
+We can iteratively classify the given green-labeled data point, starting with $K = N/2$, dividing by 2 in each iteration. This way, we can effectively perform a Binary Search on the size of the green circle and minimize the number of queries to $logN$. \\
+
+                \item Is there any setting that leads to the wrong prediction for a given test point using a 1-NN classifier?\\
+\textbf{Ans: Yes, if the data points are imbalanced between the two circles.}\\
+Assume the blue circle is dense while the green circle is sparse. The green input data may end up closer to a point in the blue circle and be classified as blue. \\
+            \end{enumerate}
+        \item 
+            \begin{enumerate}
+                \item What would be the label of x? \\
+                \textbf{Ans: Label 1} \\
+                Given $K = 1$, the data point with the index 2 is the closest to the input x with the Euclidean distance: 
+                Given $K = 1$, the data point with the index 2 (whose label is 1) is the closest to the input x with the Euclidean distance: 
+                Given $K = 1$, the data point with the index 2 is the closest to the input x with the Euclidean distance: 
+                $$
+                \sqrt{(0 - 0.4)^2 + (0 - 0.4)^2 + (1 - 1.5)^2} = \sqrt{0.57} \approx 0.7549834435
+                $$ \\
+                \item Should we choose a smaller K or a larger K to reduce overfitting when the training data contains a lot of noise? \\
+                \textbf{Ans: Larger K.} \\
+                To avoid overfitting, a larger K value should be adopted, so the input is not affected by the labels of outliers. As the KNN algorithm classifies an input based on the most common labels among K nearest neighbors to the input, the more neighbors considered, the less say a single neighbor has. Thus, increasing the K value suppresses the negative impact of noise.
+            \end{enumerate}
+        \item What is the probability that we get the correct prediction for \textbf{x}?\\
+        \textbf{Ans: 0.82} \\
+        Given the input space $S = \{x^{(i)}\}^N_{i=1}$ and the training set domain $\mathcal{D} = \{x^{(i)}, y^{(i)}\}^N_{i=1}$ of the 1-NN classifier, we can extrapolate that the $i^{th}$ training sample $x^{(i)}$ is the same as the input $x$. Therefore, the probability of the correct prediction requires that two independent draws of the labels (one for the real label $y$ and the other for the classifier's prediction $\hat{y}$) from the given conditional distribution should match. 
+        \begin{align}
+            &\mathbb{P}(\hat{y} = y) \\
+            &= \mathbb{P}(y = 1, \hat{y} = 1) + \mathbb{P}(y = 2, \hat{y} = 2) \\
+            &= 0.9^2 + 0.1^2 = 0.82
+        \end{align}
+
+        \item What would be the probability that a 3-NN classifier makes the correct prediction for a test sample x? How does this probability compare to using 1-NN? \\
+        \textbf{Ans: (1) 0.8776 (2) The probability is increased by 0.0576.} \\
+        Given that the settings are the same and the value of K increased to 3, we can recalculate the probability of correct predictions as follows:
+        \begin{itemize}
+            \item 3-NN classifier's predictions $(\hat{y})$: \\
+            
+            $$\begin{cases}
+                \mathbb{P}(\hat{y} = 1) = \begin{pmatrix}3 \\ 2\end{pmatrix} \cdot 0.9^2 \cdot 0.1^1 + \begin{pmatrix}3 \\ 3\end{pmatrix} \cdot 0.9^3 \cdot 0.1^0 = 0.972 \\
+                \mathbb{P}(\hat{y} = 2) = 1 - \mathbb{P}(\hat{y} = 1) = 0.028 
+            \end{cases}$$ \\
+
+            \item Updated probability of correct predictions:
+            \begin{align}
+                &\mathbb{P}(\hat{y} = y) \\
+                &= \mathbb{P}(y = 1, \hat{y} = 1) + \mathbb{P}(y = 2, \hat{y} = 2) \\
+                &= 0.9 \times 0.972 + 0.1 \times 0.028 = 0.8776
+            \end{align}
+        \end{itemize}
+
+
+        \item Is it possible to apply the K-NN algorithm in situations where the features of data points are missing? \\
+        \textbf{Ans:} Yes, it is possible to apply the K-NN algorithm to impute missing features using K-NN imputation. The K-NN imputation first finds the K nearest neighbors and then replaces the missing values with the aggregation (i.e., mean, median, or mode) of the neighbors' values.
+        
+        \end{enumerate}
+    \end{tcolorbox}
+
+\begin{Q}
+\textbf{\Large Perceptron Algorithm} (33 Pt.)
+\begin{enumerate}
+    \item Consider a set of data points in $\mathbb{R}^3$ (the data samples follow
+what you have in 1(b), see Table~\ref{tab:perceptron} for details)\label{}, now you want to use perceptron algorithm to correctly classify all the data points, answer the following questions below (\textbf{Please follow the hacked notation in the lecture 3 slides page 12}):
+      
+      \begin{enumerate}
+          \item    What is the vector $\bf{w} \in \mathbb{R}^4$ after first iteration over the first data point? (2 pt)
+          \item    Compute the $\bf{w}$ after the algorithm is converged. (2 pt)
+          \item    If we switch the label of points 2 and 3, will the perceptron algorithm still be applicable? Prove your answer. (\textit{Hint}: 3-d space is still visualizable :)) (4 pt)
+        \item With the same set of training data, will the $K$-NN and perceptron algorithm always have the same results on the test set? If yes, prove it, otherwise give a counterexample. (3 pt)
+      \end{enumerate}
+
+
+     \item 
+    Assume:
+    \begin{enumerate}
+    \item $\exists {\bf w}^*$ such that $y^{(i)}({\bf w}^{*\top}){\bf x}^{(i)}>0,\ \forall ({\bf x}^{(i)}, y^{(i)})\in\mathcal{D}$
+\item Rescale ${\bf w}^*$ and each data point such that $\|{\bf w}^*\|=1$ and $\|{\bf x}^{(i)}\|\leq 1$, $\forall {\bf x}^{(i)}\in\mathcal{D}$
+\item Margin of a hyperplane $\gamma$ is defined as $\gamma=\min | {\bf w}^{*\top}{\bf x}^{(i)}|, \forall {\bf x}^{(i)}\in\mathcal{D}$
+    \end{enumerate}
+    Consider an adapted Perceptron Algorithm as illustrated in Algorithm~\ref{algo:perceptron}. 
+
+    
+    \begin{algorithm}
+    \caption{Adapted Perceptron Algorithm}
+    \label{algo:perceptron}
+    \begin{algorithmic}[1]
+    \STATE \textbf{Input:} Dataset $\mathcal{D}$.
+    \STATE \textbf{Output:} Weight vector ${\bf w}$
+
+    \STATE {Initialization:} ${\bf w} = [0, \cdots, 0]^T$.
+    \WHILE{TRUE}
+        \STATE changed = FALSE
+        \FOR{i = 1 to $N$}
+            \IF{$\frac{y^{(i)}{\bf w}^T{\bf x}^{(i)}}{\|{\bf w}\|} \leq \frac{\gamma}{2}$}
+                \STATE ${\bf w} \leftarrow {\bf w} +  \yup{i}{\bf x}^{(i)}$
+                \STATE changed = TRUE
+            \ENDIF
+        \ENDFOR
+        \IF{Not Changed}
+            \STATE Break
+        \ENDIF
+    \ENDWHILE
+    
+    \end{algorithmic}
+    \end{algorithm}
+
+      
+    Answer following questions:
+
+    \begin{enumerate}
+        \item (4 pts) Consistent with the lecture note, we use ${\bf w}_{new}$ to denote the weight ${\bf w}$ of perceptron after an update.  Prove that $${\bf w}_{new}^\top{\bf w}^*\geq {\bf w}^\top{\bf w}^*+\gamma.$$ 
+        \item (3 pts) Prove that when $a \geq 0$, $b \geq 0$, and $\gamma \geq 0$ if 
+\[
+a^2 \leq b^2 + b\gamma + 1,
+\]
+then
+\[
+a \leq b + \frac{1}{2b} + \frac{\gamma}{2}.
+\] 
+        \item (4 pts) Prove that
+        $$
+            \|{\bf w}_{new}\|\leq\|{\bf w}\|+\frac{1}{2\|{\bf w}\|}+\frac{\gamma}{2}
+        $$ 
+        \item  (3pt) We use $M$ to denote the total number of updates that the adapted perceptron algorithm makes. Prove that if $$M\geq\frac{2}{\gamma^2},$$ then
+        $$
+            \exists t\leq M\text{, s.t. after $t$-th updates, } \|{\bf w}\|\geq\frac{2}{\gamma}
+        $$
+        \item  (8pt) Prove that 
+        $$
+            M \leq \frac{8}{\gamma^2}
+        $$ 
+    \end{enumerate}
+    \textit{Hint: }You might want to use the conclusion from the previous problem to solve the current one.
+    
+
+
+\end{enumerate}
+\end{Q}
+
+\textbf{Solution.}
+    \begin{tcolorbox}
+    \begin{enumerate}
+        \item \begin{enumerate}
+            \item What is the vector $w \in \R^4$ after the first iteration over the first data point?
+            \begin{itemize}
+                \item $x^{(1)} = [1, 1, 1]$ \quad\quad $y^{(1)}$ = 1 (Label) \quad\quad $w^{(1)} = [0, 0, 0, 0]$
+                \item Augmented x: $\hat{x}^{(1)} = [1, 1, 1, 1]$
+                \item $\because y^{(1)}(w^{(1)\intercal}\hat{x}^{(1)}) = 0 \quad\quad \therefore w^{(1)} \leftarrow w^{(1)} + y^{(1)} \hat{x}^{(1)}$
+                \item \textbf{Ans: $w = [1, 1, 1, 1]$}
+            \end{itemize}
+            \item Compute the w after the algorithm converges. \\
+            \textbf{Ans: w = [-2, 0, 0, 3]}
+            \item Is the perceptron algorithm still applicable after the labels for 2 and 3 are swapped? \\
+            \textbf{Ans: No, the data becomes linearly inseparable as shown by the figure below.} \\\\
+            \includegraphics[width=0.5\linewidth]{./perceptron_hyperplane.png}
+            \item With the same set of training data, will the K-NN and perceptron algorithms always have the same results on the test set? \\
+            \textbf{Ans: No.} \\
+          The perceptron algorithm is a supervised learning method designed for linearly separable data, whereas the K-NN algorithm is a supervised, instance-based method that assigns labels based on the majority class of an input’s nearest neighbors. When the data is not linearly separable, the perceptron may fail to find a suitable hyperplane and misclassify points. In contrast, K-NN can often handle such cases more effectively by relying on local neighborhood information rather than a global linear boundary.
+        \end{enumerate}
+        \item \begin{enumerate}
+            \item Prove that ${\bf w}_{new}^\top{\bf w}^*\geq {\bf w}^\top{\bf w}^*+\gamma.$
+            \begin{align}
+              w_{new}^\intercal w^* &= (w + yx)^\intercal w^* \\
+                                    &= w^{\intercal}w^* + yw^{*\intercal}x \\
+                                    &\because sign(y) = sign(w^{*\intercal} x) \\
+                                    &\because  yw^{*T}x = |w^{*\intercal}x| \ge \gamma \\
+                                    &\ge w^\intercal w^* + \gamma \quad (\because yw^{*\intercal}x \ge \gamma)
+            \end{align}
+            \item Prove that when $a \ge 0$, $b \ge 0$, and $\gamma\ge 0$ if $a^2 \le b^2 + b\gamma + 1$, then $a \le b + \frac{1}{2b} + \frac{\gamma}{2}$.
+            \begin{align}
+                a^2 &\le b^2 + b\gamma + 1 \\
+                    &\le (b + \frac{\gamma}{2})^2 + 1 - \frac{\gamma^2}{4} \\
+                    &\le (b + \frac{\gamma}{2})^2 + 1 \\
+                    \because &(b + \frac{1}{2b} + \frac{\gamma}{2})^2 = (b + \frac{\gamma}{2})^2 + \gamma(b + \frac{\gamma}{2}) + \frac{\gamma^2}{2} > (b + \frac{\gamma}{2})^2 + 1 \\
+                    \therefore &a \le b + \frac{1}{2b} + \frac{\gamma}{2}
+            \end{align}
+            \item Prove that $\|{\bf w}_{new}\|\leq\|{\bf w}\|+\frac{1}{2\|{\bf w}\|}+\frac{\gamma}{2}$. \\
+            \begin{align}
+                \|{w}_{new}\|^2 &= \|w + yx\|^2 \\
+                                &= \|w\|^2 + 2yw^\intercal x + \|yx\|^2 \\
+                                \because \quad& \text{The algorithm only updates when } yw^\intercal x \le \frac{\gamma}{2} \text{ while } \|w\| = 1 \\
+                                \therefore \quad& \|w_{new}\|^2 \le \|w\|^2 + \gamma + 1 \\
+                                &\text{Let } a = \|w_{new}\| \text{ and }b = \|w\|.\\ 
+                                &\text{Plug the formula in (ii) in and we derive the result}:\\
+                                &\|{\bf w}_{new}\|\leq\|{\bf w}\|+\frac{1}{2\|{\bf w}\|}+\frac{\gamma}{2}
+            \end{align}
+            \item Prove that if $M \ge \frac{2}{\gamma^2}$, then $\exists t \le M$ s.t. after $t^{th}$ updates, $\|w\| \ge \frac{2}{\gamma}$
+            \begin{align}
+                &\text{From (i), we can derive that after t updates } \\
+                &w_t^{\intercal}w^* \ge w_{t-1}^{\intercal}w^* + t\gamma \ge t\gamma\\
+                \because \\
+                &w_t^{\intercal}w^* \leq ||w_t|| \cdot ||w^*|| \quad \text{(Cauchy-Schwarz Inequality)} \\
+                &||w_t|| \cdot ||w^*||= ||w_t|| \cdot 1 \quad \text{(since } ||w^*|| = 1\text{)} \\
+                &t\gamma \le w_t^{\intercal}w^* \le \|w_t\| \\
+                \therefore  \\
+                &\text{Given that t} \le M \text{ and that M} \ge \frac{2}{\gamma^2}, \text{if } \|w\| < \frac{2} {\gamma} \text{ and t = M} \\
+                &M\gamma \le w_M^{\intercal}w^* \le \|w_M\| < \frac{2}{\gamma} \\
+                &\Rightarrow M < \frac{2}{\gamma^2} \Rightarrow\!\Leftarrow M \ge \frac{2}{\gamma^2} \\
+                \because &\quad \|w\| < \frac{2}{\gamma} \Rightarrow M < \frac{2}{\gamma^2} \text{ and } M \ge \frac{2}{\gamma^2}\quad (contradiction) \\
+                \therefore &\quad \|w\| \ge \frac{2}{\gamma}
+            \end{align}
+            \item Prove $M \le \frac{8}{\gamma^2}$.\\
+            \begin{align}
+                M\gamma &\leq w^T w^* \\
+                        &\le |w^T w^*| \\
+                        &\leq ||w|| \cdot ||w^*|| \quad \text{(Cauchy-Schwarz Inequality)} \\
+                        &\le ||w|| \cdot 1 \quad \text{(since } ||w^*|| = 1\text{)} \\
+                        &\le ||w|| \\
+                       \because \\ 
+                        &\|w_{t+1}\|^2 \le \|w_{t}\|^2 + \gamma + 1 \quad \text{(squared version used in (iii))}\\
+                        &\because \|w^*\| = 1 \text{, } \|x\| \le 1 \text{, and } \gamma \le \|w^*\|\|x\| \Rightarrow \gamma \le 1\\
+                        &\therefore \gamma + 1 \le 2 \text{, and with } \|w_0\| = 0 \\
+                        &\Rightarrow \|w_{M}\|^2 \le 2M \\
+                        &\Rightarrow \|w_M\| \le \sqrt{2M} \\
+                        \therefore &\quad M\gamma \le w_M^\intercal w^* \le \|w_M\| \le \sqrt{2M} \\
+                       &\Rightarrow M\le \frac{\|w\|^2}{\gamma} \\
+                       &\Rightarrow M\gamma \le \sqrt{2M} \\
+                       &\Rightarrow M^2\gamma^2 \le 2M \\
+                       &\Rightarrow M \le \frac{2}{\gamma^2} \\
+                       &\Rightarrow M \le \frac{8}{\gamma^2} \\
+            \end{align}
+
+        \end{enumerate}
+            
+    \end{enumerate}
+    \end{tcolorbox}
+ 
+
+\begin{Q}
+\textbf{\Large MLE, MAP} (40 Pt.)
+\begin{enumerate}
+
+
+\item  (10 Pt.)
+
+\begin{enumerate}
+
+
+    
+
+    \item (4 pt) Let $X \sim \text{Triangle}(a,b)$ where $a$ is a given real number and $b$ is an unknown parameter, $a<b$. We observe $N$ draws $\mathcal{D}=\{x^{(i)}\}_{i=1}^N$.
+    Find the MLE estimate $\widehat{b}$ of b. Here Triangle$(a,b)$ is such a distribution where the PDF (probability density function) is 
+    $$
+    p(x|a,b) = \left\{ \begin{array}{ll}
+    \frac {2(x-a)}{(b-a)^2} & \text{for}\ x \in \left[a,b \right],\\
+    0 & \text{for}\ x \not\in \left[a,b \right].
+    \end{array}\right.    
+    $$
+
+    \item   For the discrete random variable $Z$, we have an unknown distribution $p(Z|X)$ where $X$ is a discrete parameter. After drawing 100 samples, the numbers of observation $(Z,X)$ are as follows: 
+    
+    \begin{table}[!htb]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+             & $X = 1$ & $X = 2$ & $X = 3$\\
+            \toprule
+            \hline
+            $Z = 1$ & 18 & 7 & 6\\
+            \hline
+            $Z = 2$ & 9 & 12 & 3\\
+            \hline
+            $Z = 3$ & 10 & 2 & 9\\
+            \hline
+            $Z = 4$ & 3 & 19 & 2\\
+            \hline
+        \end{tabular}
+        \label{tab:my_label}
+    \end{table}
+    (\textit{Hint: }You are supposed to estimate $P(Z\mid X)$ from the observed values and then use your estimated $P(Z \mid X)$ to solve the following questions)
+    \begin{enumerate}
+        \item Given that a measurement $Z = 3$ has been taken, what is the MLE for $X$?
+         (3 pt)
+        \item Following (a), we have prior probabilities (obtained from elsewhere) as follows: $P(X = 1) = 0.2, P(X = 2) = 0.5, P(X = 3) = 0.3$. What's the MAP estimate for $X$? (3 pt)
+    \end{enumerate}
+
+\end{enumerate}
+
+
+
+\item (15 Pt.)
+
+
+\begin{enumerate}
+        
+
+    \item The probability mass function of a distribution is as follows: 
+    $$
+        P(k|\lambda):=\frac{\lambda^ke^{-\lambda}}{k!},~~k\in \mathbb{Z}.
+    $$
+    Let $K=\{k^{(i)}\}_{i=1}^N$ be an i.i.d sample drawn from this distribution with parameter $\lambda$. Derive the MLE estimate $\widehat{\lambda}^{\text {MLE}}$ of $\lambda$ based on this sample $K$. (6 pt)
+
+    \item Following (i), we have a Gamma distribution
+    $$
+        p(\lambda):=\frac{\lambda^{\alpha-1}e^{-\lambda/\beta}}{\Gamma(\alpha)\beta^\alpha}
+    $$
+    as a prior for $\lambda$, where $\Gamma(\cdot)$ is the Gamma function, $\alpha>1$ and $\beta>0$. Derive the MAP estimate $\widehat{\lambda}^{\text {MAP}}$ of $\lambda$. (6 pt)
+
+
+  
+
+        
+    \item Following (i),(ii) what happens to $\widehat{\lambda}^{\text {MAP}}$ when the sample size $N$ goes to infinity? (Hint : Consider how do they relate to $\widehat{\lambda}^{\text {MLE}}$.) (3 pt)
+
+\end{enumerate}
+
+
+\item (15 Pt.)
+
+
+\begin{enumerate}
+
+    
+    \item Suppose we have $N$ independent sonar measurements $Z=\{z^{(i)}\}_{i=1}^N$ of the 1-d position $x$, and the sensor error may be modelled as $p(z^{(i)}|x)= \frac{1}{\sigma_i\sqrt{2\pi}}e^{-\frac{(z^{(i)} - x)^2}{2\sigma_i^2}}\quad \text{for}\ i=1,2,...,N$ . Derive the MLE estimate $\widehat{x}^{\text {MLE}}$ of $x$ based on this sample $Z$. (6 pt)
+    
+    \item Following (3.1), we have a Gaussian prior $x \sim \mathcal{N} (\theta_0, \sigma_{0}^2)$.
+    Derive the MAP estimate $\widehat{x}^{\text {MAP}}$ of $x$. (6 pt)
+
+    \item Following (i),(ii) what happens to $\widehat{x}^{\text {MAP}}$ when the sample size $N$ goes to infinity? (Hint: consider how do they relate to $\widehat{x}^{\text {MLE}}$.) (3 pt)
+\end{enumerate}
+
+\end{enumerate}
+
+
+\end{Q}
+
+
+
+\textbf{Solution.}
+\begin{tcolorbox}
+    \begin{enumerate}
+        \item \begin{enumerate}
+            \item Find the MLE estimate $\hat{b}$ of b. \\
+            \textbf{Ans: $\hat{b}_{MLE} = x_{max} = \max_i x^{(i)}$}
+            \begin{align}
+                L(b) &= \prod^N_{i=1} p(x^{(i)} \mid a, b) \\
+                     &= \prod^N_{i=1} \frac{2(x^{(i)} - a)}{(b - a)^2} \\
+                     &= (b - a)^{-2N} \prod^N_{i=1} 2(x^{(i)} - a) \\
+                    \ln L(b) &= -2N \ln(b - a) + \sum^N_{i = 1} \ln 2(x^{(i)} - a) \quad (\text{Monotonicity of Logarithm})\\
+                 \frac{\partial \ln L(b)}{\partial b}    &= -\frac{2N}{(b - a)} \\
+                    \because &\quad \frac{\partial \ln L(b)}{\partial b} < 0 \Rightarrow \text{L(b) decreases with b}\\
+                    \therefore & \text{maximum over b is the smallest feasible b:} \\
+                    & \hat{b}_{MLE} = x_{max} = \max_i x^{(i)}
+            \end{align}
+        
+            \item \begin{enumerate}
+                \item Given that a measurement Z = 3 has been taken, what is the MLE for X? \\
+                \textbf{Ans: 3} \\
+                Column Totals: $n_{X=1} = 40 \quad n_{X=2} = 40 \quad n_{X=3} = 20$ \\
+                $$
+                \begin{cases}
+                    \hat{P}(Z = 3 \mid X = 1) = \frac{10}{40} = 0.25 \\
+                    \hat{P}(Z = 3 \mid X = 2) = \frac{2}{40} = 0.05 \\
+                    \hat{P}(Z = 3 \mid X = 3) = \frac{9}{20} = 0.45 
+                \end{cases} 
+                $$
+                \begin{align}
+                    &\because \quad \text{MLE ignores priors} \\
+                    &\therefore \quad X_{MLE} = 3
+                \end{align}
+                \item Following (a), we have prior probabilities (obtained from elsewhere) as follows: P (X = 1) = 0.2, P (X = 2) = 0.5, P (X = 3) = 0.3. What’s the MAP estimate for X? \\
+                \textbf{Ans: 3} \\
+                $$
+                \begin{cases}
+                    P(Z = 3, X = 1) = 0.25 \times 0.20 = 0.05 \\
+                    P(Z = 3, X = 2) = 0.05 \times 0.50 = 0.025 \\
+                    P(Z = 3, X = 3) = 0.45 \times 0.30 = 0.135 \\             
+                \end{cases}
+                $$
+                Normalize and pick the highest as the MAP.
+                \begin{align}
+                &P(Z) = 0.05 + 0.025 + 0.135 = 0.21 \\
+                &\begin{cases}
+                    P(X = 1 \mid Z = 3) = 0.050 \approx 0.2380952381 \\
+                    P(X = 2 \mid Z = 3) = 0.025 \approx 0.119047619 \\
+                    P(X = 3 \mid Z = 3) = 0.135 \approx 0.6428571429 \\      
+                \end{cases} \\
+                &\Rightarrow X_{MAP} = 3
+                \end{align}
+            \end{enumerate}
+        \end{enumerate}
+    \item \begin{enumerate}
+        \item Derive the MLE estimate $\hat{\lambda}$ of $\lambda$\\
+        \textbf{Ans: $\hat{\lambda}_{MLE} = \bar{k} \quad$ ($\bar{k} = \frac{1}{N}\sum^N_{i=1}k^{(i)}$)} \\
+        \begin{align}
+        L(\lambda) &= \prod^N_{i = 1} P(k^{(i)} \mid \lambda) \\
+                   &= \frac{\lambda^{k^{(1)}}e^{-\lambda}}{k^{(1)}!} \cdot \frac{\lambda^{k^{(2)}}e^{-\lambda}}{k^{(2)}!} \cdot \frac{\lambda^{k^{(3)}}e^{-\lambda}}{k^{(3)}!} \cdots \\
+                   &= e^{-\lambda N} \cdot \lambda^{\bar{k}N} \cdot \frac{1}{k^{(1)}!k^{(2)}!k^{(3)}! \cdots} \quad (\bar{k} = \frac{1}{N}\sum^N_{i=1}k^{(i)}) \\
+                   &\text{Let } C = \frac{1}{k^{(1)}!k^{(2)}!k^{(3)}! \cdots } \\
+                   &= e^{-\lambda N} \cdot \lambda^{\bar{k}N} \cdot C \\
+    \ln L(\lambda) &= -\lambda N + \bar{k}N\ln \lambda + \ln C \\
+    \frac{\partial \ln L(\lambda)}{\partial \lambda} &= -N + \frac{\bar{k}N}{\lambda} \\
+                    \because &\quad\text{Extrema occur where derivatives = 0} \\
+                    \therefore &\quad -N + \frac{\bar{k}N}{\hat{\lambda}_{MLE}} = 0 \\
+                    &\Rightarrow \hat{\lambda}_{MLE} = \bar{k}
+        \end{align}
+        \item Derive the MAP estimate $\hat{\lambda}_{MAP}$ of $\lambda$. \\
+        \textbf{Ans: $\hat{\lambda}_{{MAP}} = \frac{\alpha N\bar{k} - 1}{N + 1/\beta}$} \\
+        
+        The relationship between posteriors and priors.
+        
+        \begin{align}
+            &p(\lambda \mid k) \propto p(k \mid \lambda)p(\lambda) \quad (\text{x is the input data}) \\
+            &p(\lambda \mid k ) \propto L(\lambda)p(\lambda)\\
+        \end{align}
+        
+        Likelihood
+        
+        \begin{align}
+             L(\lambda) &= \prod_{i = 1}^{N} \frac{\lambda^{k^{(i)}}e^{-\lambda}}{k^{(i)}!}\\
+                        &\propto \lambda^{N\bar{k}}e^{-N\lambda} \quad (\bar{k} = \frac{1}{N}\sum^N_{i = 1} k^{(i)})
+        \end{align}
+        
+        Posterior kernel
+        
+        \begin{align}
+        p(\lambda \mid k ) &\propto L(\lambda)p(\lambda) \\
+                           &=\lambda^{\alpha + N\bar{k} - 1} e^{-(N + 1 / \beta)\lambda} 
+        \end{align}
+        
+        Log-form and derivative (set to 0)
+        
+        \begin{align}
+            l(\lambda) &= \ln L(\lambda)p(\lambda) = (a + N\bar{k} - 1)\ln \lambda - (N + 1/\beta)\lambda \\
+            l'(\lambda) &= \frac{(a + N\bar{k} - 1)}{\lambda} - (N + 1/\beta) = 0\\ 
+            &\Rightarrow (a + N\bar{k} - 1) = (N + 1/\beta) \hat{\lambda}_{MAP}\\
+            &\Rightarrow \hat{\lambda}_{{MAP}} = \frac{\alpha N\bar{k} - 1}{N + 1/\beta}
+        \end{align}
+        
+        \item What happens as $N \rightarrow  \infty$? \\
+        \textbf{Ans: As $N \rightarrow \infty$, $\hat{\lambda}_{MLE} \rightarrow \hat{\lambda}_{MAP} \rightarrow \text{true population mean}$}
+        \begin{align}
+            \hat{\lambda}_{MAP} - \hat{\lambda}_{MLE} &= \frac{N}{N + \frac{1}{\beta}}\hat{k} + \frac{\alpha - 1}{N + \frac{1}{\beta}} - \hat{k} \\
+            &= \frac{\alpha - 1 - (\frac{1}{\beta})\hat{k}}{N + \frac{1}{\beta}} \\
+            &= 0 \quad (N \rightarrow \infty) 
+        \end{align}
+        Therefore, the difference between $\hat{\lambda}_{MAP}$ and $\hat{\lambda}_{MLE}$ shrinks to $0$ as $N \rightarrow \infty$, which indicates that the sample mean $\hat{k}$ approaches the true population mean as the sample size $N$ approaches infinity.
+    \end{enumerate}
+    \item \begin{enumerate}
+        \item Derive the MLE estimate $\hat{x}_{MLE}.$ \\
+        \textbf{Ans: $\hat{x}_{MLE} = \bar{z} \quad (\bar{z} = \frac{1}{N} \sum^N_{i=1} z^{(i)})$}
+        \begin{align}
+        L(x) &= \prod^{N}_{i =1} \frac{1}{\sigma_i\sqrt{2\pi}} e^{-\frac{(z^{(i)} - x)^2}{2\sigma_i^2}} \\
+        \ln L(x) &= -\sum \ln (\sigma_i\sqrt{2\pi}) - \sum^N_{i =1}\frac{(z^{(i)} - x)^2}{2\sigma_i^2} \\
+        \frac{d \ln L(x)}{dx} &=  \sum^N_{i =1}\frac{z^{(i)} - x}{\sigma_i^2} \\
+        \text{Let } \frac{d \ln L(x)}{dx} &= 0 \\
+        N\hat{x}_{MLE} &= N\bar{z} \quad (\bar{z} = \frac{1}{N} \sum^N_{i=1} z^{(i)}) \\
+        \hat{x}_{MLE} &= \bar{z}
+        \end{align}
+        
+        \item Derive the MAP estimate $\hat{x}_{MAP}.$ \\
+        \textbf{Ans: $\Rightarrow \hat{x}_{MAP} = \frac{\frac{\theta_0}{\sigma^2_0} + \sum^N_{i = 1} \frac{z^{(i)}}{\sigma^2_i}}{\frac{1}{\sigma_0^2} + \sum^N_{i=1} \frac{1}{\sigma^2_i}}$} \\
+        
+        Likelihood
+        $$
+        p(Z \mid x) \propto e^{-\frac{1}{2} \sum^N_{i = 1} \frac{(z^{(i)} - x )^2}{\sigma_i^2}}
+        $$
+        
+        Prior
+        $$
+        p(x) \propto e^{\frac{(x - \theta_0)^2}{2\sigma_0^2}}
+        $$
+
+        Posterior and log-posterior
+        \begin{align}
+        p(x \mid Z) &\propto p(x)p(Z \mid x) \\
+                    & =  e^{\frac{(x - \theta_0)^2}{2\sigma_0^2} + \frac{1}{2}\sum^{N}_{i = 1} \frac{(z^{(i)} - x )^2}{\sigma_i^2} } \\
+        l(x) &= -\frac{1}{2} \begin{bmatrix} \frac{(x - \theta_0)^2}{2\sigma_0^2} + \sum^{N}_{i = 1} \frac{(z^{(i)} - x )^2}{\sigma_i^2} \end{bmatrix}
+        \end{align}
+        Differentiate and set to zero:
+        \begin{align}
+            l'(x) &= \frac{x - \theta_0}{\sigma^2_0} + \sum^N_{i= 1} \frac{z^{(i)} - x}{\sigma^2_i} = 0 \\
+                  &\Rightarrow \hat{x}_{MAP}(\frac{1}{\sigma_0^2} + \sum^N_{i=1} \frac{1}{\sigma^2_i}) = \frac{\theta_0}{\sigma^2_0} + \sum^N_{i = 1} \frac{z^{(i)}}{\sigma^2_i} \\
+                  &\Rightarrow \hat{x}_{MAP} = \frac{\frac{\theta_0}{\sigma^2_0} + \sum^N_{i = 1} \frac{z^{(i)}}{\sigma^2_i}}{\frac{1}{\sigma_0^2} + \sum^N_{i=1} \frac{1}{\sigma^2_i}} \\
+        \end{align} 
+        \item What happens to $\hat{x}_{MAP}$ when $N \rightarrow \infty$? \\
+        \textbf{Ans: As $N \rightarrow \infty$, $\hat{x}_{MAP} \rightarrow \hat{x}_{MLE}$} \\
+        Rewrite 
+        \begin{align}
+            &\text{Let } W = \sum^{N}_{i=1}\frac{1}{\sigma_i^2} \\
+            &\hat{x}_{MLE} = \frac{\sum^{N}_{i= 1} z^{(i)}/\sigma_i^2}{1/\sigma_i^2} \\
+            &\hat{x}_{MAP} = \frac{W\hat{x}_{MLE} + \frac{\theta_0}{\sigma_0^2}}{W + \frac{1}{\sigma^2_0}} = \frac{W}{W+ \frac{1}{\sigma^2_0}} \hat{x}_{MLE} + \frac{\frac{1}{\sigma_0^2}}{W + \frac{1}{\sigma^2_0}}\theta_0 \\
+            &\text{As } N \rightarrow \infty \Rightarrow W \rightarrow \infty \Rightarrow \frac{W}{W+ \frac{1}{\sigma^2_0}} \rightarrow 1 \\
+            \therefore &\quad\hat{x}_{MAP} \rightarrow \hat{x}_{MLE} \quad (N \rightarrow \infty)
+        \end{align}
+    \end{enumerate}
+    \end{enumerate}
+\end{tcolorbox}
+
+
+
+\end{enumerate}
+
+
+
+\end{document}
