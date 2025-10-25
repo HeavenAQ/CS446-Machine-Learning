@@ -271,180 +271,180 @@
 
 
     \title{CS 446 / ECE 449 --- Homework 4}
-    \author{\emph{your NetID here}}
+    \author{\emph{yiminc2}}
     % \date{Version 1.0}
     \date{}
 
-    \begin{document}
-        \maketitle
+\begin{document}
+\maketitle
 
-        \noindent\textbf{Instructions.}
-        \begin{itemize}
-          \item
-            Homework is due \textbf{Friday, Oct 31}, at 11:59 \textbf{PM} CST; you have \textbf{3} late days in total for \textbf{all Homeworks}.
-        
-          \item
-            Everyone must submit individually at Gradescope under \texttt{\hw} and \texttt{\hwcode}.
-        
-          \item
-            The ``written'' submission at \texttt{\hw} \textbf{must be typed}, and submitted in any format gradescope accepts (to be safe, submit a PDF).  You may use \LaTeX, markdown, google docs, MS word, whatever you like; but it must be typed!
-        
-          \item
-            When submitting at \texttt{\hw}, Gradescope will ask you to \textbf{mark out boxes around each of your answers}; please do this precisely!
-        
-          \item
-            Please make sure your NetID is clear and large on the first page of the homework.
-        
-          \item
-            Your solution \textbf{must} be written in your own words.
-            Please see the course webpage for full \textbf{academic integrity} information.
-            You should cite any external reference you use.
-        
-          \item
-            We reserve the right to reduce the auto-graded score for
-            \texttt{\hwcode} if we detect funny business (e.g., your solution
-            lacks any algorithm and hard-codes answers you obtained from
-            someone else, or simply via trial-and-error with the autograder).
-            
-          \item
-           When submitting to \texttt{\hwcode}, only upload \texttt{hw4\_q3.py} and \texttt{hw4\_utils.py}. Additional files will be ignored.
-           
-        \end{itemize}
-        
+\noindent\textbf{Instructions.}
+\begin{itemize}
+	\item
+	      Homework is due \textbf{Friday, Oct 31}, at 11:59 \textbf{PM} CST; you have \textbf{3} late days in total for \textbf{all Homeworks}.
+
+	\item
+	      Everyone must submit individually at Gradescope under \texttt{\hw} and \texttt{\hwcode}.
+
+	\item
+	      The ``written'' submission at \texttt{\hw} \textbf{must be typed}, and submitted in any format gradescope accepts (to be safe, submit a PDF).  You may use \LaTeX, markdown, google docs, MS word, whatever you like; but it must be typed!
+
+	\item
+	      When submitting at \texttt{\hw}, Gradescope will ask you to \textbf{mark out boxes around each of your answers}; please do this precisely!
+
+	\item
+	      Please make sure your NetID is clear and large on the first page of the homework.
+
+	\item
+	      Your solution \textbf{must} be written in your own words.
+	      Please see the course webpage for full \textbf{academic integrity} information.
+	      You should cite any external reference you use.
+
+	\item
+	      We reserve the right to reduce the auto-graded score for
+	      \texttt{\hwcode} if we detect funny business (e.g., your solution
+	      lacks any algorithm and hard-codes answers you obtained from
+	      someone else, or simply via trial-and-error with the autograder).
+
+	\item
+	      When submitting to \texttt{\hwcode}, only upload \texttt{hw4\_q3.py} and \texttt{hw4\_utils.py}. Additional files will be ignored.
+
+\end{itemize}
+
 \begin{enumerate}[font={\Large\bfseries},left=0pt]
 
 
-\begin{Q}
+	\begin{Q}
 
-\textbf{\Large Bias-Variance in Ridge Regression. (23 pt)}
+		\textbf{\Large Bias-Variance in Ridge Regression. (23 pt)}
 
-Recall from the lecture, the Expected Test Error can be decomposed as follows:
+		Recall from the lecture, the Expected Test Error can be decomposed as follows:
 
-$$
-\mathbb{E}_{x, y, \mathcal{D}}[(h_{\mathcal{D}}(x) - y )^2] = \underbrace{\mathbb{E}_{x, \mathcal{D}}[(h_{\mathcal{D}}(x) - \bar{h}(x))^2]}_{\text{Variance}} + \underbrace{\mathbb{E}_{x}[(\bar{h}(x)-\bar{y}(x))^2]}_{\text{Bias}^2} + \underbrace{\mathbb{E}_{x, y}[(\bar{y}(x)-y)^2]}_{\text{Noise}}
-$$
+		$$
+			\mathbb{E}_{x, y, \mathcal{D}}[(h_{\mathcal{D}}(x) - y )^2] = \underbrace{\mathbb{E}_{x, \mathcal{D}}[(h_{\mathcal{D}}(x) - \bar{h}(x))^2]}_{\text{Variance}} + \underbrace{\mathbb{E}_{x}[(\bar{h}(x)-\bar{y}(x))^2]}_{\text{Bias}^2} + \underbrace{\mathbb{E}_{x, y}[(\bar{y}(x)-y)^2]}_{\text{Noise}}
+		$$
 
-Consider fixed (non-random) scalar features $\{x^{(i)}\}_{i=1}^N$. The labels are generated as $y^{(i)}=w^* x^{(i)}+\epsilon^{(i)}$ where $w^{*}$ is fixed and $\epsilon^{(i)}$ are i.i.d noises from Gaussian distribution $N(0,\sigma^2)$. Note that $w^{*}$ is unknown and $\epsilon^{(i)}$ is independent of $x^{(i)}$. Therefore, we can define the observed dataset as $\mathcal{D} = \{x^{(i)}, y^{(i)}\}_{i=1}^N$.  
+		Consider fixed (non-random) scalar features $\{x^{(i)}\}_{i=1}^N$. The labels are generated as $y^{(i)}=w^* x^{(i)}+\epsilon^{(i)}$ where $w^{*}$ is fixed and $\epsilon^{(i)}$ are i.i.d noises from Gaussian distribution $N(0,\sigma^2)$. Note that $w^{*}$ is unknown and $\epsilon^{(i)}$ is independent of $x^{(i)}$. Therefore, we can define the observed dataset as $\mathcal{D} = \{x^{(i)}, y^{(i)}\}_{i=1}^N$.
 
-Ridge regression optimizes the following objective for a dataset $\mathcal{D}$ with $\lambda \geq 0$:
+		Ridge regression optimizes the following objective for a dataset $\mathcal{D}$ with $\lambda \geq 0$:
 
-$$
-w_{\mathcal{D}} = \argmin_w \frac{1}{N} \sum_{i=1}^N (wx^{(i)}-y^{(i)})^2 + \lambda w^2
-$$
+		$$
+			w_{\mathcal{D}} = \argmin_w \frac{1}{N} \sum_{i=1}^N (wx^{(i)}-y^{(i)})^2 + \lambda w^2
+		$$
 
-For simplicity, the intercept term is omitted from this problem. The closed-form solution of ridge regression is given as:
+		For simplicity, the intercept term is omitted from this problem. The closed-form solution of ridge regression is given as:
 
-$$
-w_{\mathcal{D}} = \frac{\frac{1}{N}\sum_{i=1}^N x^{(i)} y^{(i)}}{\lambda + \frac{1}{N} \sum_{i=1}^N x^{(i)2}}
-$$
+		$$
+			w_{\mathcal{D}} = \frac{\frac{1}{N}\sum_{i=1}^N x^{(i)} y^{(i)}}{\lambda + \frac{1}{N} \sum_{i=1}^N x^{(i)2}}
+		$$
 
-\begin{enumerate}
-    \item Consider the expected label $\bar{{y}}(x) = \mathbb{E}_{y|x}[y]$. Show that $\bar{{y}}(x) = w^{*}x$. Similarly, consider the noise term: 
-    $$
-    \text{Noise} = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{y^{(i)}|x^{(i)}}[(\bar{y}(x^{(i)})-y^{(i)})^2]
-    $$ 
-    Show that $\text{Noise}=\sigma^2$. (3 pt)
-    
-    \item From the lecture, given a machine learning algorithm $\mathcal{A}$, then $h_{\mathcal{D}}=\mathcal{A}(\mathcal{D})$. For our case, $h_{\mathcal{D}}(x) = w_{\mathcal{D}}x$. Consider the expected predictor $\bar{h} = \mathbb{E}_{\mathcal{D}\sim P^{N}} \left[h_{\mathcal{D}}\right]$, then in our case $\bar{w} =  \mathbb{E}_{\mathcal{D}} [w_{\mathcal{D}}]$. Let $s^2 = \frac{1}{N}\sum_{i=1}^N x^{(i)2}$, show that:
-    $$
-    \bar{w} = \frac{s^2}{\lambda + s^2} w^{*}
-    $$
-    (3 pt)
-    
-    \item Consider the squared bias term:
+		\begin{enumerate}
+			\item Consider the expected label $\bar{{y}}(x) = \mathbb{E}_{y|x}[y]$. Show that $\bar{{y}}(x) = w^{*}x$. Similarly, consider the noise term:
+			      $$
+				      \text{Noise} = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{y^{(i)}|x^{(i)}}[(\bar{y}(x^{(i)})-y^{(i)})^2]
+			      $$
+			      Show that $\text{Noise}=\sigma^2$. (3 pt)
 
-    $$
-    \text{Bias}^2 = \frac{1}{N} \sum_{i=1}^N (\bar{w}x^{(i)} - \bar{y}(x^{(i)}))^2
-    $$
-    
-    Show that:
-    
-    $$
-    \text{Bias}^2 = \left( \frac{\lambda}{\lambda + s^2}\right)^2 w^{*2} s^2
-    $$
+			\item From the lecture, given a machine learning algorithm $\mathcal{A}$, then $h_{\mathcal{D}}=\mathcal{A}(\mathcal{D})$. For our case, $h_{\mathcal{D}}(x) = w_{\mathcal{D}}x$. Consider the expected predictor $\bar{h} = \mathbb{E}_{\mathcal{D}\sim P^{N}} \left[h_{\mathcal{D}}\right]$, then in our case $\bar{w} =  \mathbb{E}_{\mathcal{D}} [w_{\mathcal{D}}]$. Let $s^2 = \frac{1}{N}\sum_{i=1}^N x^{(i)2}$, show that:
+			      $$
+				      \bar{w} = \frac{s^2}{\lambda + s^2} w^{*}
+			      $$
+			      (3 pt)
 
-    (3 pt)
+			\item Consider the squared bias term:
 
-    \item Consider the variance term:
+			      $$
+				      \text{Bias}^2 = \frac{1}{N} \sum_{i=1}^N (\bar{w}x^{(i)} - \bar{y}(x^{(i)}))^2
+			      $$
 
-    $$
-    \text{Variance} = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)} - \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}])^2\right]
-    $$
-    
-    Show that:
-    
-    $$
-    \text{Variance} = \frac{s^4 \sigma^2}{N(\lambda + s^2)^2}
-    $$
+			      Show that:
 
-    (5 pt)
+			      $$
+				      \text{Bias}^2 = \left( \frac{\lambda}{\lambda + s^2}\right)^2 w^{*2} s^2
+			      $$
 
-    \item What happens to the $\text{Bias}^2$ and $\text{Variance}$ term when $\lambda \to 0$ and $\lambda \to \infty$. Your answer should demonstrate that the bias and variance are monotonic with respect to $\lambda$, but in different directions. Therefore, changing $\lambda$ controls the trade-offs. In practice, since we don't know $w^*$ and the true distribution of $\epsilon$, we cannot infer the optimal value of $\lambda$. Therefore, we use model selection to determine the best value for $\lambda$. (3 pt)
+			      (3 pt)
 
-    \item Alternatively, we can consider an equivalent form of ridge regression:
+			\item Consider the variance term:
 
-    $$
-    w_{\mathcal{D}} =\argmin_w \frac{1}{N} \sum_{i=1}^N (wx^{(i)}-y^{(i)})^2 \quad \text{so that} \quad w^2 \leq R
-    $$
-    
-    The regularization constraint forces the weight $w$ to be inside a ball around the origin with radius $\sqrt{R}$. Use the triangle inequality to show that:
-    
-    $$|w_{\mathcal{D}} - \bar{w}|^2 \leq 4R$$
-    
-    From there, we can see that the maximum Euclidean distance between any two points in the ball can at most be $2\sqrt{R}$. (3 pt)
+			      $$
+				      \text{Variance} = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)} - \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}])^2\right]
+			      $$
 
-    \item Show that ridge regression bounds the variance by $4Rs^2$
+			      Show that:
 
-    $$
-    \text{Variance} \leq 4Rs^2
-    $$
+			      $$
+				      \text{Variance} = \frac{s^4 \sigma^2}{N(\lambda + s^2)^2}
+			      $$
 
-    Note that this bound does not depend on $w^*$ or $\epsilon$, but it can be loose compared to the actual value of variance. (3 pt)
+			      (5 pt)
+
+			\item What happens to the $\text{Bias}^2$ and $\text{Variance}$ term when $\lambda \to 0$ and $\lambda \to \infty$. Your answer should demonstrate that the bias and variance are monotonic with respect to $\lambda$, but in different directions. Therefore, changing $\lambda$ controls the trade-offs. In practice, since we don't know $w^*$ and the true distribution of $\epsilon$, we cannot infer the optimal value of $\lambda$. Therefore, we use model selection to determine the best value for $\lambda$. (3 pt)
+
+			\item Alternatively, we can consider an equivalent form of ridge regression:
+
+			      $$
+				      w_{\mathcal{D}} =\argmin_w \frac{1}{N} \sum_{i=1}^N (wx^{(i)}-y^{(i)})^2 \quad \text{so that} \quad w^2 \leq R
+			      $$
+
+			      The regularization constraint forces the weight $w$ to be inside a ball around the origin with radius $\sqrt{R}$. Use the triangle inequality to show that:
+
+			      $$|w_{\mathcal{D}} - \bar{w}|^2 \leq 4R$$
+
+			      From there, we can see that the maximum Euclidean distance between any two points in the ball can at most be $2\sqrt{R}$. (3 pt)
+
+			\item Show that ridge regression bounds the variance by $4Rs^2$
+
+			      $$
+				      \text{Variance} \leq 4Rs^2
+			      $$
+
+			      Note that this bound does not depend on $w^*$ or $\epsilon$, but it can be loose compared to the actual value of variance. (3 pt)
+		\end{enumerate}
+
+	\end{Q}
+
+	\begin{Q}
+		\textbf{\Large Optimal Classifier under Squared Loss. \textbf{(12 pt)}}
+
+		Let $h_D(\boldsymbol{x})$ be a predictor trained on a dataset $D$, which maps an input feature vector $\boldsymbol{x}\in \mathbb{R}^d$ to a predicted output. The output variable is denoted by $y\in\mathbb{R}$.
+
+		Consider the expected squared error loss, which measures the performance of our predictor. This expectation is taken over the joint distribution $P$ of input data $\boldsymbol{x}$ and the true labels $y$, and distribution of dataset $D$ samples from $P^N$, where $D$ has $N$ data points:
+		$$L = E_{(\boldsymbol{x}, y)\sim P, D\sim P^N}\left[(h_D(\boldsymbol{x}) - y)^2\right]$$
+		Your task is to:
+		\begin{enumerate}
+			\item \textbf{Find the Optimal Classifier}: Derive the predictor $h_{opt}(\boldsymbol{x})$ that minimizes this expected loss. Note that the optimal predictor should not be dependent on any specific dataset $D$. (6 pt) \\
+			      \textit{Hint:} One route you can take is applying the law of total expectation and minimizing the inner expectation for a fixed classifier $h_D(\boldsymbol{x})$.
+			\item \textbf{Find the Optimal Error Rate}: Derive the minium achievable error, or irreducible error, after you derive the optimal classifier. (6 pt)
+		\end{enumerate}
+	\end{Q}
+
+	\begin{Q}
+		\textbf{\Large Model Selection. \textbf{(19 pt)}}
+		\\ \\ In this problem, you will implement a  model selection pipeline using k-fold cross-validation to find the best hyper-parameters for polynomial regression with regularization. You can see more detailed instructions in the code file \texttt{hw4\_q3.py}. \\ \\
+		\textbf{Submission Instruction} If you want to implement any helper function of your own, please make sure you either put it directly in \texttt{hw4\_q3.py} or put them into \texttt{hw4\_utils.py} and submit \texttt{hw4\_utils.py} with \texttt{hw4\_q3.py} to Gradescope!
+
+		\begin{enumerate}
+			\item \textbf{K-Fold Cross-Validation (8 pt)}\\
+			      Implement \texttt{cross\_validate\_model(X, y, model, k\_folds)} that
+			      \begin{itemize}
+				      \item Splits the data into $k$ folds using \texttt{KFold} with \texttt{shuffle=True} and \texttt{random\_state=42}
+				      \item For each fold, trains the model on $k-1$ folds and evaluates on the remaining fold
+				      \item Returns the mean and standard deviation of validation mean squared error across all folds
+			      \end{itemize}
+			      \textbf{Remark 1:} For \texttt{model}, you can train the \texttt{model} by calling \texttt{model.fit(X,y)} on data \texttt{(X,y)}. In addition, you can call \texttt{model.predict(X)} to obtain the prediction from \texttt{model}. \\
+			      \textbf{Remark 2:} For each iteration during k-fold cross validation, please make sure you make a copy of \texttt{model} by \texttt{model\_copy = deepcopy(model)}  and then train \texttt{model\_copy} instead of \texttt{model}. Otherwise, you will be training a model from previous iteration.\\
+			\item \textbf{Model Selection (11 pt)} \\
+			      Implement \texttt{select\_best\_model(X\_train, y\_train)} that sweeps through different polynomial degrees and regularization strengths (for Ridge and Lasso regression) to perform k-fold cross validation with $k=5$. The function should return the model with lowest cross-validation error. \\
+			      \textbf{Remark 1:} You can use \texttt{LinearRegression()} to initialize the Linear Regression model.\\
+			      \textbf{Remark 2:} You can use \texttt{Ridge(alpha=alpha, random\_state=42)} to initialize the Ridge Regression model. \\
+			      \textbf{Remark 3:} You can use \texttt{Lasso(alpha=alpha, random\_state=42, max\_iter=2000)} to initialize the Lasso Regression model. \\
+
+		\end{enumerate}
+
+	\end{Q}
+
+
 \end{enumerate}
-
-\end{Q}
-
-\begin{Q}
-\textbf{\Large Optimal Classifier under Squared Loss. \textbf{(12 pt)}}
-
-Let $h_D(\boldsymbol{x})$ be a predictor trained on a dataset $D$, which maps an input feature vector $\boldsymbol{x}\in \mathbb{R}^d$ to a predicted output. The output variable is denoted by $y\in\mathbb{R}$.
-
-Consider the expected squared error loss, which measures the performance of our predictor. This expectation is taken over the joint distribution $P$ of input data $\boldsymbol{x}$ and the true labels $y$, and distribution of dataset $D$ samples from $P^N$, where $D$ has $N$ data points:
-$$L = E_{(\boldsymbol{x}, y)\sim P, D\sim P^N}\left[(h_D(\boldsymbol{x}) - y)^2\right]$$
-Your task is to:
-\begin{enumerate}
-    \item \textbf{Find the Optimal Classifier}: Derive the predictor $h_{opt}(\boldsymbol{x})$ that minimizes this expected loss. Note that the optimal predictor should not be dependent on any specific dataset $D$. (6 pt) \\ 
-    \textit{Hint:} One route you can take is applying the law of total expectation and minimizing the inner expectation for a fixed classifier $h_D(\boldsymbol{x})$.
-    \item \textbf{Find the Optimal Error Rate}: Derive the minium achievable error, or irreducible error, after you derive the optimal classifier. (6 pt)
-\end{enumerate}
-\end{Q}
-
-\begin{Q}
-\textbf{\Large Model Selection. \textbf{(19 pt)}} 
-\\ \\ In this problem, you will implement a  model selection pipeline using k-fold cross-validation to find the best hyper-parameters for polynomial regression with regularization. You can see more detailed instructions in the code file \texttt{hw4\_q3.py}. \\ \\
-\textbf{Submission Instruction} If you want to implement any helper function of your own, please make sure you either put it directly in \texttt{hw4\_q3.py} or put them into \texttt{hw4\_utils.py} and submit \texttt{hw4\_utils.py} with \texttt{hw4\_q3.py} to Gradescope!
-
-\begin{enumerate}
-    \item \textbf{K-Fold Cross-Validation (8 pt)}\\
-    Implement \texttt{cross\_validate\_model(X, y, model, k\_folds)} that
-    \begin{itemize}
-        \item Splits the data into $k$ folds using \texttt{KFold} with \texttt{shuffle=True} and \texttt{random\_state=42}
-        \item For each fold, trains the model on $k-1$ folds and evaluates on the remaining fold
-        \item Returns the mean and standard deviation of validation mean squared error across all folds
-    \end{itemize}
-    \textbf{Remark 1:} For \texttt{model}, you can train the \texttt{model} by calling \texttt{model.fit(X,y)} on data \texttt{(X,y)}. In addition, you can call \texttt{model.predict(X)} to obtain the prediction from \texttt{model}. \\ 
-    \textbf{Remark 2:} For each iteration during k-fold cross validation, please make sure you make a copy of \texttt{model} by \texttt{model\_copy = deepcopy(model)}  and then train \texttt{model\_copy} instead of \texttt{model}. Otherwise, you will be training a model from previous iteration.\\
-    \item \textbf{Model Selection (11 pt)} \\
-    Implement \texttt{select\_best\_model(X\_train, y\_train)} that sweeps through different polynomial degrees and regularization strengths (for Ridge and Lasso regression) to perform k-fold cross validation with $k=5$. The function should return the model with lowest cross-validation error. \\
-    \textbf{Remark 1:} You can use \texttt{LinearRegression()} to initialize the Linear Regression model.\\
-    \textbf{Remark 2:} You can use \texttt{Ridge(alpha=alpha, random\_state=42)} to initialize the Ridge Regression model. \\ 
-    \textbf{Remark 3:} You can use \texttt{Lasso(alpha=alpha, random\_state=42, max\_iter=2000)} to initialize the Lasso Regression model. \\
-    
-\end{enumerate}
-
-\end{Q}
-
-   
-    \end{enumerate}
 
 \end{document}
