@@ -263,7 +263,10 @@
     {%
       \phantom{s}
       \bigskip
-      \textbf{Solution.}
+    \hrule
+    \vspace{1em}
+      \textbf{Solutions: } \\
+    \hrule
     }
 
     \def\hw{HW4}
@@ -404,6 +407,132 @@
 
 	\end{Q}
 
+	\begin{enumerate}
+		\item \begin{enumerate}
+
+			      \item Prove that $\bar{y}(x) = w^*x$ \\
+			            \begin{align}
+				            \bar{y}(x) & = \mathbb{E}_{y \mid x} [y]                                                   \\
+				                       & = \mathbb{E}_{y \mid x} [w^*x + \epsilon]                                     \\
+				                       & = w^*x + \mathbb{E}_{y \mid x}[\epsilon] \quad (\epsilon \sim N(0, \sigma^2)) \\
+				                       & = w^*x
+			            \end{align}
+
+			      \item Prove Noise $= \sigma^2$ \\
+			            \begin{align}
+				            Noise & = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{y^{(i)}|x^{(i)}}[(\bar{y}(x^{(i)})-y^{(i)})^2]                                                                  \\
+				                  & =\frac{1}{N} \sum_{i=1}^N \left[\mathbb{E}_{y^{(i)} \mid x^{(i)}}[\bar{y}(x^{(i)})^2]
+				            - 2\mathbb{E}_{y^{(i)}|x^{(i)}}[\bar{y}(x^{(i)})y^{(i)}]
+				            + \mathbb{E}_{y^{(i)}|x^{(i)}}[y^{(i)2}] \right]                                                                                                               \\
+				                  & =\frac{1}{N} \sum_{i=1}^N \left[\mathbb{E}_{y^{(i)} \mid x^{(i)}}[(w^*x^{(i)})^2]
+				            - 2\mathbb{E}_{y^{(i)}|x^{(i)}}[w^*x^{(i)} (w^*x^{(i)} + \epsilon)]
+				            + \mathbb{E}_{y^{(i)}|x^{(i)}}[(w^*x^{(i)} + \epsilon)^2] \right]                                                                                              \\
+				                  & \text{Plug in }\bar{y}(x^{(i)}) = w^* x^{(i)} \quad \mathbb{E}\left[\epsilon^{(i)}\right] = 0 \quad \mathbb{E}\left[(\epsilon^{(i)2}\right] = \sigma^2 \\
+				                  & =\frac{1}{N} \sum_{i=1}^N \left[(w^*x^{(i)})^2
+				            - 2(w^*x^{(i)})^2
+				            + (w^*x^{(i)})^2 + \sigma^2 \right]                                                                                                                            \\
+				                  & = \sigma^2
+			            \end{align}
+		      \end{enumerate}
+
+		\item Show that $\bar{w} = \frac{s^2}{\lambda + s^2}w^*$
+		      \begin{align}
+			      \bar{w} & = \mathbb{E}_\mathcal{D} [w_\mathcal{D}]                                                                                                                                                                                                                                             \\
+			              & = \mathbb{E}_\mathcal{D} \left[\frac{\frac{1}{N} \sum^{N}_{i = 1} x^{(i)} y^{(i)}}{\lambda + \frac{1}{N} \sum^{N}_{i = 1} x^{(i)2}}\right] \quad (s^2 = \frac{1}{N} \sum^N_{i = 1} x^{(i)2})                                                                                         \\
+			              & = \mathbb{E}_\mathcal{D} \left[\frac{\frac{1}{N} \sum^{N}_{i = 1} x^{(i)} y^{(i)}}{\lambda + s^2}\right]                                                                                                                                                                             \\
+			              & = \frac{1}{N} \sum^{N}_{i = 1} \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)} y^{(i)}}{\lambda + s^2}\right] \quad (y^{(i)}=w^* x^{(i)}+\epsilon^{(i)})                                                                                                                                  \\
+			              & = \frac{1}{N} \sum^{N}_{i = 1} \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)} w^* x^{(i)}+ x^{(i)}\epsilon^{(i)}}{\lambda + s^2}\right]                                                                                                                                                  \\
+			              & = \frac{1}{N} \sum^{N}_{i = 1} \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)2} w^*}{\lambda + s^2}\right] + \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)}\epsilon^{(i)}}{\lambda + s^2}\right]                                                                                              \\
+			              & = \frac{1}{N} \sum^{N}_{i = 1} \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)2} w^*}{\lambda + s^2}\right] + \frac{1}{\lambda + s^2}\frac{1}{N} \sum^{N}_{i = 1}\mathbb{E}_\mathcal{D} \left[x^{(i)}\epsilon^{(i)}\right]  \quad (\mathbb{E}_\mathcal{D} \left[\epsilon^{(i)}\right] = 0) \\
+			              & = w^*\frac{1}{N} \sum^{N}_{i = 1} \mathbb{E}_\mathcal{D} \left[\frac{x^{(i)2}}{\lambda + s^2}\right]                                                                                                                                                                                 \\
+			              & = w^*\mathbb{E}_\mathcal{D}\left[\frac{s^2}{\lambda + s^2}\right]                                                                                                                                                                                                                    \\
+			              & = \frac{s^2}{\lambda + s^2}w^*                                                                                                                                                                                                                                                       \\
+		      \end{align}
+
+		\item Show that $Bias^2 = \left( \frac{\lambda}{\lambda + s^2}\right)^2 w^{*2} s^2$
+		      \begin{align}
+			      Bias^2 & = \frac{1}{N} \sum_{i=1}^N (\bar{w}x^{(i)} - \bar{y}(x^{(i)}))^2                                                                                        \\[2pt]
+			             & = \frac{1}{N} \sum_{i=1}^N \left[ (\bar{w}x^{(i)})^2 - 2\bar{w}x^{(i)}\bar{y}(x^{(i)}) + \bar{y}(x^{(i)})^2 \right]                                     \\[2pt]
+			             & = \bar{w}^2  \frac{1}{N} \sum_{i=1}^N x^{(i)2} - \bar{w}\frac{1}{N} \sum_{i=1}^N 2x^{(i)}\bar{y}(x^{(i)}) + \frac{1}{N} \sum_{i=1}^N \bar{y}(x^{(i)})^2 \\[2pt]
+			             & = \bar{w}^2  s^2 - 2\bar{w}w^*s^2 + w^{*2}s^2                                                                                                           \\[2pt]
+			             & = s^2 \left(\bar{w}^2  - 2\bar{w}w^* + w^{*2}\right)                                                                                                    \\[2pt]
+			             & = s^2 \left(\left( \frac{s^2}{\lambda + s^2}w^* \right)^2  - 2\frac{s^2}{\lambda + s^2}w^{*2} + w^{*2}\right)                                           \\[2pt]
+			             & = s^2 w^{*2}\left(\frac{s^2}{\lambda + s^2} - 1\right)^2                                                                                                \\[2pt]
+			             & = s^2 w^{*2}\left(\frac{-\lambda}{\lambda + s^2} \right)^2                                                                                              \\[2pt]
+			             & = \left(\frac{\lambda}{\lambda + s^2} \right)^2w^{*2}s^2
+		      \end{align}
+
+		\item Show that $\text{Variance} = \frac{s^4 \sigma^2}{N(\lambda + s^2)^2}$
+		      \begin{align}
+			      \text{Variance}                                                   & = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)} - \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}])^2\right]                                                                                                                                                              \\[2pt]
+			                                                                        & = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})^2 -2(w_{\mathcal{D}}x^{(i)}) \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}] + \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}]^2\right]                                                                               \\[2pt]
+			                                                                        & = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})^2 \right]- 2 \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})\mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}] \right] + \mathbb{E}_{\mathcal{D}}\left[ \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}]^2\right] \\[2pt]
+			      \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})^2 \right] & = \mathbb{E}_{\mathcal{D}} \left[w_{\mathcal{D}}^2 x^{(i)2}\right] \quad (\text{given } \{x^{(i)}\}^N_{i = 1}\text{ is fixed})                                                                                                                                                                               \\[2pt]
+			                                                                        & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[w_{\mathcal{D}}^2\right]                                                                                                                                                                                                                                            \\[2pt]
+			                                                                        & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[\left(\frac{\frac{1}{N}\sum^N_{i = 1} x^{(i)}y^{(i)}}{\lambda + s^2}\right)^2\right]                                                                                                                                                                                \\[2pt]
+			                                                                        & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[\left(\frac{s^2w^*}{\lambda + s^2}\right)^2\right]                                                                                                                                                                                                                  \\[2pt]
+			                                                                        & = x^{(i)2}\left(\bar{w}^2 + Var_D[w_D] \right)                                                                                                                                                                                                                                                               \\[2pt]
+		      \end{align}
+
+		      \begin{align}
+			      \because Var_\mathcal{D}[w_\mathcal{D}]                                                                          & = \frac{1}{N^2(\lambda + s^2)^2} \sum^{N}_{i = 1}Var_\mathcal{D} \left[x^{(i)}\epsilon^{(i)}\right]                                                                  \\[2pt]
+			                                                                                                                       & = \frac{1}{N^2(\lambda + s^2)^2} \sum^{N}_{i = 1}x^{(i)2}Var_\mathcal{D} \left[\epsilon^{(i)}\right]  \quad (Var_\mathcal{D} \left[\epsilon^{(i)}\right] = \sigma^2) \\[2pt]
+			                                                                                                                       & = \frac{1}{N(\lambda + s^2)^2} s^2 \sigma^2                                                                                                                          \\[4pt]
+			      \therefore \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})^2 \right]                                     & = x^{(i)2}\left(\bar{w}^2 + \frac{\sigma^2 s^2}{N(\lambda + s^2)^2} \right)                                                                                          \\[2pt]
+			      \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)})\mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}] \right] & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[ \frac{s^2w^*}{\lambda + s^2} \mathbb{E}_{\mathcal{D}} \left[\frac{s^2w^*}{\lambda + s^2}\right]\right]                     \\[2pt]
+			                                                                                                                       & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[\frac{s^2w^*}{\lambda + s^2}\right]\mathbb{E}_{\mathcal{D}} \left[\frac{s^2w^*}{\lambda + s^2}\right]                       \\[2pt]
+			                                                                                                                       & = x^{(i)2} \bar{w}^2                                                                                                                                                 \\[2pt]
+			      \mathbb{E}_{\mathcal{D}}\left[ \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}]^2\right]                        & = x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[\left(\mathbb{E}_{\mathcal{D}} \left[\frac{s^2w^*}{\lambda + s^2}\right] \right)^2\right]                                   \\[2pt]
+			                                                                                                                       & = x^{(i)2}\bar{w}^2                                                                                                                                                  \\[2pt]
+			      Variance                                                                                                         & = \frac{1}{N} \sum^N_{i = 1} x^{(i)2}\left(\bar{w}^2 + \frac{\sigma^2 s^2}{N(\lambda + s^2)^2} \right) - 2x^{(i)2} \bar{w}^2 + x^{(i)2}\bar{w}^2                     \\[2pt]
+			                                                                                                                       & = \frac{1}{N} \sum^N_{i = 1} x^{(i)2} \frac{\sigma^2 s^2}{N(\lambda + s^2)^2}                                                                                        \\[2pt]
+			                                                                                                                       & = \frac{\sigma^2 s^4}{N(\lambda + s^2)^2}
+		      \end{align}
+		\item What happens to the $Bias^2$ and Variance term when $\lambda \rightarrow 0$ and $\lambda \rightarrow \infty$? \\
+		      \textbf{Monotonicity}
+		      \begin{itemize}
+			      \item $Bias^2$ is increasing in $\lambda$ as both the numerator $\lambda^2$ and the denominator $(\lambda + s^2)^2$ grows as $\lambda$ increases.
+			      \item Variance is decreasing in $\lambda$ as only the denominator $N(\lambda + s^2)^2$ grows, which shrinks the value of the variance.
+		      \end{itemize}
+		      \begin{enumerate}
+			      \item When $\lambda \rightarrow 0$ \\
+			            $Bias^2 \rightarrow 0, \quad Variance \rightarrow \frac{\sigma^2}{N}$
+			      \item When $\lambda \rightarrow \infty$ \\
+			            $Bias^2 \rightarrow w^{*2}s^2, \quad Variance \rightarrow 0$
+		      \end{enumerate}
+
+		\item Prove $$|w_{\mathcal{D}} - \bar{w}|^2 \leq 4R$$ with triangular inequality.
+		      \begin{itemize}
+			      \item Given the interval $\left[-\sqrt{R}, \sqrt{R}\right]$, for every dataset $\mathcal{D}$, the optimizer $w_\mathcal{D}$ satisfies $\mid w_\mathcal{D} \mid \le \sqrt{R}$.
+			      \item  $\mid w_\mathcal{D} \mid \le \sqrt{R}$ also implies that the expected predictor $\bar{w}$ should abide by the rule $\mid \bar{w}\mid \le \sqrt{R}$
+			      \item Given triangle inequality, we also know that $\mid w_\mathcal{D} - \bar{w} \mid \le \mid w_\mathcal{D} \mid + \mid \bar{w} \mid$.
+			      \item Therefore, we can derive that:
+			            $$
+				            \mid w_\mathcal{D} - \bar{w} \mid \le \mid w_\mathcal{D} \mid + \mid \bar{w} \mid \le \sqrt{R} + \sqrt{R}
+			            $$
+			            $$
+				            \mid w_\mathcal{D} - \bar{w} \mid^2 \le 4R
+			            $$
+		      \end{itemize}
+
+		\item Show that ridge regression bounds the variance by $4Rs^2$
+		      \begin{itemize}
+			      \item First, rewrite the original variance formula as follows:
+			            \begin{align}
+				            Variance & = \frac{1}{N} \sum_{i=1}^N \mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}}x^{(i)} - \mathbb{E}_{\mathcal{D}}[w_{\mathcal{D}} x^{(i)}])^2\right] \\
+				                     & = \frac{1}{N} \sum_{i=1}^N x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}} - \bar{w})^2\right]
+			            \end{align}
+			      \item Given that $\mid w_\mathcal{D} - \bar{w} \mid^2 \le 4R$, we can derive the inequality:
+			            \begin{align}
+				             & \frac{1}{N} \sum_{i=1}^N x^{(i)2}\mathbb{E}_{\mathcal{D}} \left[(w_{\mathcal{D}} - \bar{w})^2\right]
+				            \le \frac{1}{N} \sum_{i=1}^N x^{(i)2} 4R
+				            = 4Rs^2                                                                                                 \\
+				             & \implies Variance \le 4Rs^2
+			            \end{align}
+		      \end{itemize}
+
+	\end{enumerate}
+
 	\begin{Q}
 		\textbf{\Large Optimal Classifier under Squared Loss. \textbf{(12 pt)}}
 
@@ -418,6 +547,44 @@
 			\item \textbf{Find the Optimal Error Rate}: Derive the minium achievable error, or irreducible error, after you derive the optimal classifier. (6 pt)
 		\end{enumerate}
 	\end{Q}
+
+	\begin{enumerate}
+		\item Find the Optimal Classifier \\
+		      \textbf{Ans: $h_{opt}(x)  =  \mathbb{E}\left[ y \mid x\right]$} \\
+		      \begin{itemize}
+			      \item Given the law of total expectation
+			            \begin{align}
+				            L & = \mathbb{E}_{(x, y)\sim P, D\sim P^N}\left[(h_D(\boldsymbol{x}) - y)^2\right] \\
+				              & = \mathbb{E}_{(x, D)}\left[\mathbb{E}_{(y \mid x)}(h_D(x) - y)^2 \mid x\right]
+			            \end{align}
+			      \item For fixed $x$ and $D$
+			            \begin{align}
+				             & \mathbb{E}_{y \mid x}\left[(h_D(x) - y)^2 \mid x \right]                                                 \\
+				             & =\mathbb{E}_{y \mid x} \left[h_D(x)^2 - 2h_D(x)y + y^2\right]                                            \\
+				             & = h_D(x)^2 - 2h_D(x)\mathbb{E}\left[ y \mid x\right] + \mathbb{E}\left[y^2 \mid x\right]                 \\
+				             & = h_D(x)^2 - 2h_D(x)\mathbb{E}\left[ y \mid x\right] + Var(y \mid x) + \mathbb{E}\left[y \mid x\right]^2 \\
+				             & = \left(h_D(x) - \mathbb{E}\left[ y \mid x\right]\right)^2 + Var(y \mid x)
+			            \end{align}
+			      \item Thus
+			            \begin{align}
+				            L & =  \mathbb{E}_{(x, D)}\left[\left(h_D(x) - \mathbb{E}\left[ y \mid x\right]\right)^2 + Var(y \mid x)\mid x\right]                                                                         \\
+				              & =  \mathbb{E}_{(x, D)}\left[\left(h_D(x) - \mathbb{E}\left[ y \mid x\right]\right)^2 \mid  x \right] + \underbrace{\mathbb{E}_{x}\left[ Var(y \mid x)\right]}_{\text{Independent of }h_D} \\
+				              & =  \mathbb{E}_{(x, D)}\left[\left(h_D(x) - \mathbb{E}\left[ y \mid x\right]\right)^2 \mid  x \right]
+			            \end{align}
+			      \item Finally, we derive $h_{opt}(x)$ by setting $L = 0$
+			            \begin{align}
+				            0      & =  \mathbb{E}_{(x, D)}\left[\left(h_D(x) - \mathbb{E}\left[ y \mid x\right]\right)^2 \mid  x \right] \\
+				            h_D(x) & =  \mathbb{E}\left[ y \mid x\right] = h_{opt}(x)
+			            \end{align}
+		      \end{itemize}
+		\item Find the Optimal Error Rate \\
+		      \textbf{Ans: }$\mathbb{E}_x\left[{Var(y \mid x)}\right]$ \\
+		      Plug the $h_{opt}(x) = \mathbb{E}\left[y \mid x \right]$ back to L, and get the answer: \\
+		      \begin{align}
+			      L^* & = \mathbb{E}_{(x, D)}\left[\left(\mathbb{E}\left[y \mid x \right] - \mathbb{E}\left[ y \mid x\right]\right)^2 \mid  x \right] + \mathbb{E}_{x}\left[ Var(y \mid x)\right] \\
+			          & = \mathbb{E}_{x}\left[Var(y \mid x) \right]                                                                                                                               \\
+		      \end{align}
+	\end{enumerate}
 
 	\begin{Q}
 		\textbf{\Large Model Selection. \textbf{(19 pt)}}
