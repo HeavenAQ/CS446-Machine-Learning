@@ -6,6 +6,7 @@ This repo contains coursework for CS446/ECE449. Each homework has its own folder
 - `CS446_2025_hw1/` — Perceptron toy example + LaTeX writeup.
 - `CS446_2025_hw2/` — Gaussian Naive Bayes (PyTorch) and Logistic Regression demo; data files included; LaTeX writeup.
 - `CS446_2025_hw3/` — SVM (kernelized, PyTorch) and Linear/Ridge/Lasso regression pipeline; code in `hw3_code/`; LaTeX writeup.
+- `CS446_2025_hw4/` — Bias–variance analysis (written) and polynomial regression model selection; code in `hw4_code/`; LaTeX writeup.
 
 ## Environment
 - Python 3.10+ recommended.
@@ -47,6 +48,14 @@ This repo contains coursework for CS446/ECE449. Each homework has its own folder
 - Writeup source: `../hw3.tex` (compiled PDF: `../hw3.pdf`).
 
 ### HW4 (`CS446_2025_hw4/hw4_code`)
-
-- Working on it
-
+- Q1 — Bias–variance in Ridge Regression (written):
+  - Writeup sources in `../hw4.tex` (compiled PDF: `../hw4.pdf`).
+- Q3 — Model selection via k-fold CV for polynomial regression (Linear/Ridge/Lasso):
+  - Code: `hw4_q3.py`, helpers in `hw4_utils.py`.
+  - Typical use (example):
+    - `from hw4_q3 import select_best_model`
+    - `best = select_best_model(X_train, y_train)`
+    - `best.fit(X_train, y_train); ypred = best.predict(X_test)`
+  - Cross-validation: `cross_validate_model(X, y, model, k_folds=5)` returns mean/std MSE.
+- Dependencies: numpy, scikit-learn. (Matplotlib only needed for the optional `test.py` visualization in the folder.)
+- Submission (per instructions): upload only `hw4_q3.py` and `hw4_utils.py` to Gradescope for the programming part.
